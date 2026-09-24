@@ -13,7 +13,8 @@ import { SITE, waLink, ytEmbed, ytThumb, ytWatch } from './config.js';
 /* ── бренд-иконки ── */
 const WaIcon = (p) => (
   <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden {...p}>
-    <path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.46 1.32 4.96L2 22l5.25-1.38a9.87 9.87 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2zm5.43 12.38c-.3-.15-1.75-.86-2.02-.96-.27-.1-.47-.15-.67.15-.2.3-.76.96-.93 1.16-.17.2-.34.22-.64.07-.3-.15-1.25-.46-2.38-1.47-.88-.78-1.48-1.75-1.65-2.05-.17-.3-.02-.46.13-.61.14-.14.3-.36.45-.53.15-.18.2-.3.3-.5.1-.2.05-.38-.02-.53-.08-.15-.67-1.6-.92-2.2-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.07-.8.38-.27.3-1.04 1.02-1.04 2.48s1.07 2.88 1.22 3.08c.15.2 2.1 3.2 5.08 4.49.71.3 1.26.49 1.7.63.71.22 1.36.19 1.87.12.57-.09 1.75-.72 2-1.41.25-.69.25-1.28.17-1.41-.07-.13-.27-.2-.57-.35z" />
+    <path d="M17.47 14.38c-.3-.15-1.75-.86-2.02-.96-.27-.1-.47-.15-.67.15-.2.3-.76.96-.93 1.16-.17.2-.34.22-.64.07-.3-.15-1.25-.46-2.38-1.47-.88-.78-1.48-1.75-1.65-2.05-.17-.3-.02-.46.13-.61.14-.14.3-.36.45-.53.15-.18.2-.3.3-.5.1-.2.05-.38-.02-.53-.08-.15-.67-1.6-.92-2.2-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.07-.8.38-.27.3-1.04 1.02-1.04 2.48s1.07 2.88 1.22 3.08c.15.2 2.1 3.2 5.08 4.49.71.3 1.26.49 1.7.63.71.22 1.36.19 1.87.12.57-.09 1.75-.72 2-1.41.25-.69.25-1.28.17-1.41-.07-.13-.27-.2-.57-.35z" />
+    <path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.46 1.32 4.96L2 22l5.25-1.38a9.87 9.87 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2zm0 18.13h-.01a8.2 8.2 0 0 1-4.18-1.15l-.3-.18-3.11.82.83-3.04-.2-.31a8.18 8.18 0 0 1-1.26-4.36c0-4.54 3.7-8.23 8.24-8.23a8.18 8.18 0 0 1 5.82 2.41 8.18 8.18 0 0 1 2.41 5.83c0 4.54-3.7 8.21-8.24 8.21z" />
   </svg>
 );
 const YtIcon = (p) => (
@@ -79,6 +80,7 @@ function LessonRow({ v, c, lang }) {
 
 /* ── экраны ── */
 function Home({ c, lang, lessons, counts }) {
+  const main = lessons.find((v) => v.id === SITE.heroVideo?.id) || lessons[0];
   const [q, setQ] = useState('');
   const found = useMemo(() => {
     const s = q.trim().toLowerCase();
@@ -96,6 +98,24 @@ function Home({ c, lang, lessons, counts }) {
       </div>
 
       <div className="pad">
+        {main && (
+          <a className="feature" href={`#/v/${main.id}`}>
+            <span className="feature-thumb">
+              <img src={ytThumb(main.id)} alt="" />
+              <span className="play"><Play fill="currentColor" /></span>
+              {main.dur && <i className="dur">{main.dur}</i>}
+            </span>
+            <span className="feature-body">
+              <span className="feature-tag">{c.home.featured}</span>
+              <span className="feature-title">{main.title}</span>
+            </span>
+          </a>
+        )}
+
+        <a className="btn btn-wa wide" href={waLink(c.waMessage)} target="_blank" rel="noreferrer">
+          <WaIcon /> {c.home.cta}
+        </a>
+
         <label className="search">
           <Search />
           <input value={q} onChange={(e) => setQ(e.target.value)} placeholder={c.home.search} aria-label={c.home.search} />
@@ -191,6 +211,10 @@ function Video({ c, lang, id, lessons }) {
 
         <a className="btn btn-primary wide" href={ytWatch(v.id)} target="_blank" rel="noreferrer">
           <YtIcon /> {c.video.openYt} <ExternalLink size={15} />
+        </a>
+
+        <a className="btn btn-wa wide" href={waLink(c.waMessage)} target="_blank" rel="noreferrer">
+          <WaIcon /> {c.home.cta}
         </a>
 
         <div className="card soft">
