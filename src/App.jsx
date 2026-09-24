@@ -129,9 +129,10 @@ function Home({ c, lang, lessons, counts, onMenu }) {
             <div className="tiles">
               {CAT_ORDER.filter((k) => counts[k]).map((k) => {
                 const Art = CAT_ART[k];
+                const art = SITE.art?.[k];
                 return (
                   <a className="tile" key={k} href={`#/c/${k}`}>
-                    <span className="tile-art"><Art /></span>
+                    <span className="tile-art">{art?.icon ? <img src={art.icon} alt="" loading="lazy" /> : <Art />}</span>
                     <span className="tile-row">
                       <span className="tile-t">{c.cats[k].t}</span>
                       <span className="tile-go"><ChevronRight /></span>
@@ -202,7 +203,7 @@ function Category({ c, lang, id, lessons }) {
   return (
     <>
       <div className="banner">
-        <div className="hero-img" style={{ backgroundImage: `url(${SITE.heroImage})` }} />
+        <div className="hero-img" style={{ backgroundImage: `url(${SITE.art?.[id]?.banner || SITE.heroImage})` }} />
         <button className="icon-btn ghost banner-back" onClick={() => go('/')} aria-label="назад"><ChevronLeft /></button>
         <div className="banner-in"><h2>{cat.t}</h2></div>
       </div>

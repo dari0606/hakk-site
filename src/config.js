@@ -13,7 +13,16 @@ export const SITE = {
   // Сейчас: горы в тумане на закате, Unsplash (свободная лицензия),
   // unsplash.com/photos/photo-1542662565-7e4b66bae529
   // Своё фото: положите файл в public/ и укажите его здесь, напр. '/hero.jpg'.
-  heroImage: '/hero.jpg',
+  heroImage: '/art/home.jpg',
+  // Иллюстрации разделов: иконка на плитке и баннер на странице раздела.
+  art: {
+    tafsir:  { icon: '/art/icon-tafsir.png',  banner: '/art/banner-tafsir.jpg' },
+    asma:    { icon: '/art/icon-names.png',   banner: '/art/banner-names.jpg' },
+    namaz:   { icon: '/art/icon-prayer.png',  banner: '/art/banner-prayer.jpg' },
+    quran:   { icon: '/art/icon-quran.png' },
+    mothers: { icon: '/art/icon-history.png' },
+    other:   { icon: '/art/icon-lectures.png' },
+  },
   // ролик в шапке сайта — любой урок с канала
   // Главное видео на первом экране.
   //   { type: 'instagram', id: '<код рилса>' }  — рилс из Instagram
