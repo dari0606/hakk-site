@@ -5,7 +5,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   Search, ChevronLeft, ChevronRight, House, BookOpen, Menu as MenuIcon, Play,
   Sparkles, MoonStar, ListChecks, ScrollText, Headphones, Globe, MessageSquare,
-  Info, ExternalLink, Clock,
+  ExternalLink, Clock,
 } from 'lucide-react';
 import { COPY, CAT_ORDER } from './copy.js';
 import { SITE, waLink, ytEmbed, ytThumb, ytWatch, igEmbed, igLink } from './config.js';
@@ -20,6 +20,12 @@ const WaIcon = (p) => (
 const YtIcon = (p) => (
   <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden {...p}>
     <path d="M21.58 7.19a2.5 2.5 0 0 0-1.77-1.77C18.25 5 12 5 12 5s-6.25 0-7.81.42A2.5 2.5 0 0 0 2.42 7.2 26 26 0 0 0 2 12a26 26 0 0 0 .42 4.81 2.5 2.5 0 0 0 1.77 1.77C5.75 19 12 19 12 19s6.25 0 7.81-.42a2.5 2.5 0 0 0 1.77-1.77A26 26 0 0 0 22 12a26 26 0 0 0-.42-4.81zM10 15.02V8.98L15.2 12 10 15.02z" />
+  </svg>
+);
+
+const IgIcon = (p) => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" aria-hidden {...p}>
+    <rect x="3" y="3" width="18" height="18" rx="5" /><circle cx="12" cy="12" r="4" /><circle cx="17.2" cy="6.8" r="1.2" fill="currentColor" stroke="none" />
   </svg>
 );
 
@@ -311,6 +317,7 @@ function MenuScreen({ c, lang, setLang }) {
   const items = [
     { icon: BookOpen, label: c.menu.lessons, href: '#/lessons' },
     { icon: YtIcon, label: c.menu.channel, href: SITE.youtube, out: true },
+    ...(SITE.instagram ? [{ icon: IgIcon, label: `@${SITE.instagram}`, href: `https://instagram.com/${SITE.instagram}`, out: true }] : []),
     { icon: WaIcon, label: c.menu.write, href: waLink(c.waMessage), out: true },
     ...(SITE.platform ? [{ icon: Globe, label: c.menu.platform, href: SITE.platform, out: true }] : []),
   ];
@@ -345,11 +352,6 @@ function MenuScreen({ c, lang, setLang }) {
             <button className={lang === 'ru' ? 'on' : ''} onClick={() => setLang('ru')}>РУС</button>
           </span>
         </div>
-      </div>
-
-      <div className="card soft">
-        <h3><Info size={16} /> {c.menu.about}</h3>
-        <p>{c.menu.aboutText}</p>
       </div>
 
       <p className="copyright">© {new Date().getFullYear()} Hakk Academy. {c.rights}</p>

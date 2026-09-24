@@ -5,7 +5,7 @@
 // ─────────────────────────────────────────────────────────────────────────────
 export const SITE = {
   whatsapp: '77773268276',            // рабочий номер WhatsApp
-  instagram: '',                      // напр. 'hakk_academy' (без @); пусто — кнопка скрыта
+  instagram: 'hakk_academy',          // без @; пусто — кнопка скрыта
   telegram: '',                       // напр. 'hakk_academy'; пусто — кнопка скрыта
   email: '',                          // напр. 'salem@hakk.kz'; пусто — строка скрыта
   youtube: 'https://www.youtube.com/@Hakk_academy',
