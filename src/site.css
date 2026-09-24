@@ -60,21 +60,17 @@ main { padding-bottom: 96px; }
 .icon-btn.ghost { background: rgba(255, 255, 255, .82); }
 
 /* ── первый экран ── */
-.hero { position: relative; overflow: hidden; border-radius: 0 0 30px 30px; padding: 40px 22px 46px; text-align: center; box-shadow: 0 10px 30px rgba(96, 74, 210, .22); background: linear-gradient(150deg, #6d59e6 0%, #8a6ff2 42%, #b98bf0 100%); }
-.hero::before { content: ''; position: absolute; inset: -30%; background:
-  radial-gradient(28% 26% at 18% 18%, rgba(255, 214, 160, .5), transparent 65%),
-  radial-gradient(30% 28% at 84% 12%, rgba(120, 220, 255, .42), transparent 66%),
-  radial-gradient(34% 30% at 72% 88%, rgba(255, 160, 220, .4), transparent 66%);
-  filter: blur(42px); }
-.hero::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 40%, rgba(70, 48, 170, .28) 100%); }
+.hero { position: relative; overflow: hidden; border-radius: 0 0 30px 30px; padding: 40px 22px 46px; text-align: center; box-shadow: 0 10px 30px rgba(96, 74, 210, .22); background: #3b2a86; }
+.hero .hero-img { position: absolute; inset: -20px; background-size: cover; background-position: center; filter: blur(6px) saturate(1.15) brightness(.82); transform: scale(1.06); }
+.hero::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(58, 40, 138, .6) 0%, rgba(74, 52, 168, .52) 45%, rgba(40, 26, 100, .8) 100%); }
 .hero-in { position: relative; z-index: 2; }
 .hero-logo { width: 80px; height: 80px; margin: 0 auto 18px; border-radius: 25px; object-fit: contain; background: #fff; padding: 7px; box-shadow: 0 14px 30px rgba(40, 24, 110, .3); }
 .hero h1 { font-size: clamp(25px, 6.6vw, 30px); font-weight: 760; letter-spacing: -.025em; color: #fff; text-shadow: 0 2px 18px rgba(48, 30, 120, .3); }
 .hero p { margin: 12px auto 0; font-size: 15px; color: rgba(255, 255, 255, .95); max-width: 320px; font-weight: 500; }
 
 /* ── баннер раздела ── */
-.banner { position: relative; overflow: hidden; border-radius: 0 0 30px 30px; min-height: 210px; display: flex; align-items: flex-end; padding: 18px; box-shadow: var(--shadow); }
-.banner::after { content: ''; position: absolute; inset: 0; background: linear-gradient(165deg, rgba(109, 89, 230, .72), rgba(185, 139, 240, .62) 55%, rgba(60, 40, 150, .72)); }
+.banner { position: relative; overflow: hidden; border-radius: 0 0 30px 30px; min-height: 230px; background: #2b1d70; display: flex; align-items: flex-end; padding: 18px; box-shadow: var(--shadow); }
+.banner::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(38, 24, 92, .34) 0%, rgba(38, 24, 92, .28) 40%, rgba(34, 22, 84, .78) 100%); }
 .banner-back { position: absolute; top: 16px; left: 16px; z-index: 3; }
 .banner-in { position: relative; z-index: 2; width: 100%; text-align: center; padding-bottom: 8px; }
 .banner-in h2 { color: #fff; font-size: clamp(24px, 6.4vw, 30px); font-weight: 720; text-shadow: 0 2px 20px rgba(28, 18, 70, .4); }
@@ -103,27 +99,30 @@ main { padding-bottom: 96px; }
 
 /* ── плитки разделов ── */
 .tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 18px; }
-.tile { position: relative; background: var(--card); border-radius: var(--r); padding: 16px; box-shadow: var(--shadow); min-height: 132px; display: flex; flex-direction: column; transition: transform .15s, box-shadow .15s; }
+.tile { position: relative; background: var(--card); border-radius: var(--r); padding: 0; overflow: hidden; box-shadow: var(--shadow); display: flex; flex-direction: column; transition: transform .15s, box-shadow .15s; }
 .tile:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
-.tile-ic { width: 42px; height: 42px; border-radius: 13px; background: var(--soft); color: var(--brand); display: grid; place-items: center; }
-.tile-ic svg { width: 21px; height: 21px; }
-.tile-t { margin-top: auto; padding-top: 12px; font-size: 14.5px; font-weight: 650; color: var(--ink); line-height: 1.3; padding-right: 26px; }
-.tile-n { font-size: 12.5px; color: var(--muted); margin-top: 3px; }
-.tile-arrow { position: absolute; right: 14px; bottom: 16px; width: 22px; height: 22px; padding: 3px; border-radius: 50%; background: var(--soft); color: var(--brand); }
+.tile-cover { position: relative; display: block; aspect-ratio: 16 / 10; background-size: cover; background-position: center; background-color: var(--soft); }
+.tile-cover::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(30, 20, 70, .06), rgba(30, 20, 70, .3)); }
+.tile-ic { position: absolute; left: 10px; bottom: 10px; z-index: 2; width: 34px; height: 34px; border-radius: 11px; background: rgba(255, 255, 255, .92); color: var(--brand); display: grid; place-items: center; box-shadow: 0 3px 10px rgba(20, 14, 60, .25); }
+.tile-ic svg { width: 18px; height: 18px; }
+.tile-t { padding: 12px 14px 0; font-size: 14.5px; font-weight: 650; color: var(--ink); line-height: 1.3; }
+.tile-n { display: flex; align-items: center; gap: 4px; padding: 3px 14px 14px; font-size: 12.5px; color: var(--muted); }
+.tile-n svg { width: 15px; height: 15px; margin-left: auto; color: var(--brand); }
+
 
 /* цвет у каждого раздела — чтобы страница не выглядела серой */
-.tile[data-cat="tafsir"] .tile-ic { background: #ece9fb; color: #6a5cc4; }
-.tile[data-cat="asma"] .tile-ic { background: #fdf0da; color: #b9812a; }
-.tile[data-cat="namaz"] .tile-ic { background: #ddf3ef; color: #2b9184; }
-.tile[data-cat="quran"] .tile-ic { background: #e4e9fb; color: #4358c4; }
-.tile[data-cat="mothers"] .tile-ic { background: #fbe4ef; color: #bc5189; }
-.tile[data-cat="other"] .tile-ic { background: #e5f4e8; color: #45925a; }
-.tile[data-cat="tafsir"] .tile-arrow { background: #ece9fb; color: #6a5cc4; }
-.tile[data-cat="asma"] .tile-arrow { background: #fdf0da; color: #b9812a; }
-.tile[data-cat="namaz"] .tile-arrow { background: #ddf3ef; color: #2b9184; }
-.tile[data-cat="quran"] .tile-arrow { background: #e4e9fb; color: #4358c4; }
-.tile[data-cat="mothers"] .tile-arrow { background: #fbe4ef; color: #bc5189; }
-.tile[data-cat="other"] .tile-arrow { background: #e5f4e8; color: #45925a; }
+.tile[data-cat="tafsir"] .tile-ic { color: #6a5cc4; }
+.tile[data-cat="tafsir"] .tile-n svg { color: #6a5cc4; }
+.tile[data-cat="asma"] .tile-ic { color: #b9812a; }
+.tile[data-cat="asma"] .tile-n svg { color: #b9812a; }
+.tile[data-cat="namaz"] .tile-ic { color: #2b9184; }
+.tile[data-cat="namaz"] .tile-n svg { color: #2b9184; }
+.tile[data-cat="quran"] .tile-ic { color: #4358c4; }
+.tile[data-cat="quran"] .tile-n svg { color: #4358c4; }
+.tile[data-cat="mothers"] .tile-ic { color: #bc5189; }
+.tile[data-cat="mothers"] .tile-n svg { color: #bc5189; }
+.tile[data-cat="other"] .tile-ic { color: #45925a; }
+.tile[data-cat="other"] .tile-n svg { color: #45925a; }
 
 /* ── чипы ── */
 .chips { display: flex; gap: 8px; overflow-x: auto; margin-top: 16px; padding-bottom: 2px; scrollbar-width: none; }
