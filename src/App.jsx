@@ -8,6 +8,7 @@ import {
   ExternalLink, Clock,
 } from 'lucide-react';
 import { COPY, CAT_ORDER } from './copy.js';
+import { CAT_ART } from './icons.jsx';
 import { SITE, waLink, ytEmbed, ytThumb, ytWatch, igEmbed, igLink } from './config.js';
 
 /* ── бренд-иконки ── */
@@ -88,7 +89,7 @@ function LessonRow({ v, c, lang }) {
 }
 
 /* ── экраны ── */
-function Home({ c, lang, lessons, counts }) {
+function Home({ c, lang, lessons, counts, onMenu }) {
   const hero = SITE.heroVideo;
   const insta = hero?.type === 'instagram';
   const file = hero?.type === 'file';
@@ -102,55 +103,19 @@ function Home({ c, lang, lessons, counts }) {
   return (
     <>
       <div className="hero">
+        {SITE.heroImage && <div className="hero-img" style={{ backgroundImage: `url(${SITE.heroImage})` }} />}
+        <div className="hero-bar">
+          <span className="wordmark"><b>HAKK</b><i>ACADEMY</i></span>
+          <button className="hero-burger" onClick={onMenu} aria-label={c.nav.menu}><MenuIcon /></button>
+        </div>
         <div className="hero-in">
-          <img className="hero-logo" src="/logo.png" alt="Hakk Academy" />
           <h1>{c.home.hi1}<br />{c.home.hi2}</h1>
           <p>{c.home.sub}</p>
         </div>
       </div>
 
       <div className="pad">
-        {file && (
-          <div className="feature">
-            <video className="feature-video" src={hero.src} poster={hero.poster} controls playsInline preload="metadata" />
-            <div className="feature-body">
-              <span className="feature-tag">{c.home.featured}</span>
-              {hero.title && <span className="feature-title">{hero.title}</span>}
-            </div>
-          </div>
-        )}
-
-        {insta && (
-          <div className="feature insta">
-            <div className="insta-frame">
-              <iframe src={igEmbed(hero.id)} title={c.home.featured} scrolling="no" allowtransparency="true" allow="encrypted-media" />
-            </div>
-            <div className="feature-body">
-              <span className="feature-tag">{c.home.featured}</span>
-              <a className="feature-link" href={igLink(hero.id)} target="_blank" rel="noreferrer">Instagram-да ашу →</a>
-            </div>
-          </div>
-        )}
-
-        {main && (
-          <a className="feature" href={`#/v/${main.id}`}>
-            <span className="feature-thumb">
-              <img src={ytThumb(main.id)} alt="" />
-              <span className="play"><Play fill="currentColor" /></span>
-              {main.dur && <i className="dur">{main.dur}</i>}
-            </span>
-            <span className="feature-body">
-              <span className="feature-tag">{c.home.featured}</span>
-              <span className="feature-title">{main.title}</span>
-            </span>
-          </a>
-        )}
-
-        <a className="btn btn-wa wide" href={waLink(c.waMessage)} target="_blank" rel="noreferrer">
-          <WaIcon /> {c.home.cta}
-        </a>
-
-        <label className="search">
+        <label className="search lift">
           <Search />
           <input value={q} onChange={(e) => setQ(e.target.value)} placeholder={c.home.search} aria-label={c.home.search} />
         </label>
@@ -160,19 +125,62 @@ function Home({ c, lang, lessons, counts }) {
             {found.length ? found.map((v) => <LessonRow key={v.id} v={v} c={c} lang={lang} />) : <p className="muted pad-y">{c.nothing}</p>}
           </div>
         ) : (
-          <div className="tiles">
-            {CAT_ORDER.filter((k) => counts[k]).map((k) => {
-              const Ic = CAT_ICON[k] || BookOpen;
-              return (
-                <a className="tile" key={k} data-cat={k} href={`#/c/${k}`}>
-                  <span className="tile-ic"><Ic /></span>
-                  <span className="tile-t">{c.cats[k].t}</span>
-                  <span className="tile-n">{c.count(counts[k])}</span>
-                  <ChevronRight className="tile-arrow" />
-                </a>
-              );
-            })}
-          </div>
+          <>
+            <div className="tiles">
+              {CAT_ORDER.filter((k) => counts[k]).map((k) => {
+                const Art = CAT_ART[k];
+                return (
+                  <a className="tile" key={k} href={`#/c/${k}`}>
+                    <span className="tile-art"><Art /></span>
+                    <span className="tile-row">
+                      <span className="tile-t">{c.cats[k].t}</span>
+                      <span className="tile-go"><ChevronRight /></span>
+                    </span>
+                  </a>
+                );
+              })}
+            </div>
+
+            {file && (
+              <div className="feature">
+                <video className="feature-video" src={hero.src} poster={hero.poster} controls playsInline preload="metadata" />
+                <div className="feature-body">
+                  <span className="feature-tag">{c.home.featured}</span>
+                  {hero.title && <span className="feature-title">{hero.title}</span>}
+                </div>
+              </div>
+            )}
+
+            {insta && (
+              <div className="feature insta">
+                <div className="insta-frame">
+                  <iframe src={igEmbed(hero.id)} title={c.home.featured} scrolling="no" allowtransparency="true" allow="encrypted-media" />
+                </div>
+                <div className="feature-body">
+                  <span className="feature-tag">{c.home.featured}</span>
+                  <a className="feature-link" href={igLink(hero.id)} target="_blank" rel="noreferrer">Instagram-да ашу →</a>
+                </div>
+              </div>
+            )}
+
+            {main && (
+              <a className="feature" href={`#/v/${main.id}`}>
+                <span className="feature-thumb">
+                  <img src={ytThumb(main.id)} alt="" />
+                  <span className="play"><Play fill="currentColor" /></span>
+                  {main.dur && <i className="dur">{main.dur}</i>}
+                </span>
+                <span className="feature-body">
+                  <span className="feature-tag">{c.home.featured}</span>
+                  <span className="feature-title">{main.title}</span>
+                </span>
+              </a>
+            )}
+
+            <a className="btn btn-wa wide" href={waLink(c.waMessage)} target="_blank" rel="noreferrer">
+              <WaIcon /> {c.home.cta}
+            </a>
+          </>
         )}
       </div>
     </>
@@ -405,12 +413,10 @@ export default function App() {
             <a className="icon-btn" href="#/menu" aria-label={c.nav.menu}><MenuIcon /></a>
           )} />
         )}
-        {screen === 'home' && (
-          <TopBar c={c} right={<a className="icon-btn" href="#/menu" aria-label={c.nav.menu}><MenuIcon /></a>} />
-        )}
+
 
         <main>
-          {screen === 'home' && <Home c={c} lang={lang} lessons={lessons} counts={counts} />}
+          {screen === 'home' && <Home c={c} lang={lang} lessons={lessons} counts={counts} onMenu={() => go('/menu')} />}
           {screen === 'cat' && <Category c={c} lang={lang} id={id} lessons={lessons} />}
           {screen === 'video' && <Video c={c} lang={lang} id={id} lessons={lessons} />}
           {screen === 'lessons' && <AllLessons c={c} lang={lang} lessons={lessons} counts={counts} />}
