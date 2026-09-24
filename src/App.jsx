@@ -96,7 +96,6 @@ function Home({ c, lang, lessons, counts }) {
   return (
     <>
       <div className="hero">
-        <div className="hero-img" style={{ backgroundImage: `url(${SITE.heroImage})` }} />
         <div className="hero-in">
           <img className="hero-logo" src="/logo.png" alt="Hakk Academy" />
           <h1>{c.home.hi1}<br />{c.home.hi2}</h1>
@@ -159,7 +158,7 @@ function Home({ c, lang, lessons, counts }) {
             {CAT_ORDER.filter((k) => counts[k]).map((k) => {
               const Ic = CAT_ICON[k] || BookOpen;
               return (
-                <a className="tile" key={k} href={`#/c/${k}`}>
+                <a className="tile" key={k} data-cat={k} href={`#/c/${k}`}>
                   <span className="tile-ic"><Ic /></span>
                   <span className="tile-t">{c.cats[k].t}</span>
                   <span className="tile-n">{c.count(counts[k])}</span>
