@@ -88,19 +88,11 @@ function LessonRow({ v, c, lang }) {
 }
 
 /* ── экраны ── */
-const coverOf = (lessons, k) => {
-  const pick = SITE.catCover?.[k];
-  if (pick) return ytThumb(pick);
-  const v = lessons.find((x) => x.cat === k);
-  return v ? ytThumb(v.id) : null;
-};
-
 function Home({ c, lang, lessons, counts }) {
   const hero = SITE.heroVideo;
   const insta = hero?.type === 'instagram';
   const file = hero?.type === 'file';
   const main = insta || file ? null : (lessons.find((v) => v.id === hero?.id) || lessons[0]);
-  const heroCover = ytThumb(SITE.heroCover) || coverOf(lessons, 'tafsir');
   const [q, setQ] = useState('');
   const found = useMemo(() => {
     const s = q.trim().toLowerCase();
@@ -110,7 +102,6 @@ function Home({ c, lang, lessons, counts }) {
   return (
     <>
       <div className="hero">
-        {heroCover && <div className="hero-img" style={{ backgroundImage: `url(${heroCover})` }} />}
         <div className="hero-in">
           <img className="hero-logo" src="/logo.png" alt="Hakk Academy" />
           <h1>{c.home.hi1}<br />{c.home.hi2}</h1>
@@ -174,11 +165,10 @@ function Home({ c, lang, lessons, counts }) {
               const Ic = CAT_ICON[k] || BookOpen;
               return (
                 <a className="tile" key={k} data-cat={k} href={`#/c/${k}`}>
-                  <span className="tile-cover" style={{ backgroundImage: `url(${coverOf(lessons, k)})` }}>
-                    <span className="tile-ic"><Ic /></span>
-                  </span>
+                  <span className="tile-ic"><Ic /></span>
                   <span className="tile-t">{c.cats[k].t}</span>
-                  <span className="tile-n">{c.count(counts[k])} <ChevronRight /></span>
+                  <span className="tile-n">{c.count(counts[k])}</span>
+                  <ChevronRight className="tile-arrow" />
                 </a>
               );
             })}
@@ -204,7 +194,7 @@ function Category({ c, lang, id, lessons }) {
   return (
     <>
       <div className="banner">
-        <div className="hero-img" style={{ backgroundImage: `url(${coverOf(lessons, id)})` }} />
+        <div className="hero-img" style={{ backgroundImage: `url(${SITE.heroImage})` }} />
         <button className="icon-btn ghost banner-back" onClick={() => go('/')} aria-label="назад"><ChevronLeft /></button>
         <div className="banner-in"><h2>{cat.t}</h2></div>
       </div>
@@ -288,12 +278,11 @@ function AllLessons({ c, lang, lessons, counts }) {
         {CAT_ORDER.filter((k) => counts[k]).map((k) => {
           const Ic = CAT_ICON[k] || BookOpen;
           return (
-            <a className="tile" key={k} data-cat={k} href={`#/c/${k}`}>
-              <span className="tile-cover" style={{ backgroundImage: `url(${coverOf(lessons, k)})` }}>
-                <span className="tile-ic"><Ic /></span>
-              </span>
+            <a className="tile" key={k} href={`#/c/${k}`}>
+              <span className="tile-ic"><Ic /></span>
               <span className="tile-t">{c.cats[k].t}</span>
-              <span className="tile-n">{c.count(counts[k])} <ChevronRight /></span>
+              <span className="tile-n">{c.count(counts[k])}</span>
+              <ChevronRight className="tile-arrow" />
             </a>
           );
         })}

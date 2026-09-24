@@ -19,10 +19,6 @@ export const SITE = {
   //   { type: 'instagram', id: '<код рилса>' }  — рилс из Instagram
   //   { id: '<код видео>' }                     — урок с YouTube
   //   { type: 'file', src: '/hero.mp4', poster: '/hero-poster.jpg' } — файл на сайте
-  heroCover: 'C0bPohqx1RY',   // обложка первого экрана — превью этого урока
-  // Обложка раздела: по умолчанию берётся превью первого урока.
-  // Можно задать свой: catCover: { mothers: '<код видео>' }
-  catCover: {},
   heroVideo: { type: 'file', src: '/hero.mp4', poster: '/hero-poster.jpg', title: 'Алғашқы оффлайн орталық' },
   platform: '',                       // адрес учебной платформы; пусто — кнопка скрыта
   channelId: 'UCxOw4gHztFswqyl0ee-vx8w',
