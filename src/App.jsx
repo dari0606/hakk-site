@@ -1,13 +1,14 @@
-// Hakk Academy — видеотека в оформлении YouTube: верхняя панель с поиском,
-// боковое меню, сетка карточек и страница просмотра с плеером.
-// Экраны адресуются хешем: #/c/tafsir, #/v/<id>.
+// Hakk Academy — сайт в виде приложения: главная с разделами, список уроков,
+// страница урока, поиск и меню. Экраны переключаются через хеш в адресе,
+// поэтому ссылкой можно поделиться: #/c/tafsir, #/v/<id>.
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
-  Search, ArrowLeft, House, BookOpen, Menu as MenuIcon, X, Play,
-  Sparkles, MoonStar, ListChecks, ScrollText, Headphones, Globe, Info,
+  Search, ChevronLeft, ChevronRight, House, BookOpen, Menu as MenuIcon, Play,
+  Sparkles, MoonStar, ListChecks, ScrollText, Headphones, Globe, MessageSquare,
+  Info, ExternalLink, Clock,
 } from 'lucide-react';
 import { COPY, CAT_ORDER } from './copy.js';
-import { SITE, waLink, ytEmbed, ytThumb, ytWatch } from './config.js';
+import { SITE, waLink, ytEmbed, ytThumb, ytWatch, igEmbed, igLink } from './config.js';
 
 /* ── бренд-иконки ── */
 const WaIcon = (p) => (
@@ -23,175 +24,324 @@ const YtIcon = (p) => (
 );
 
 const CAT_ICON = { tafsir: BookOpen, asma: Sparkles, namaz: MoonStar, quran: ScrollText, mothers: Headphones, other: ListChecks };
+
+const secs = (d = '') => { const p = d.split(':').map(Number); return p.length === 3 ? p[0] * 3600 + p[1] * 60 + p[2] : p.length === 2 ? p[0] * 60 + p[1] : 0; };
 const getLang = () => { try { return localStorage.getItem('hakk_locale') === 'ru' ? 'ru' : 'kk'; } catch { return 'kk'; } };
 
+/* ── маршрут в адресной строке ── */
 const parseHash = () => {
   const h = window.location.hash.replace(/^#\/?/, '');
   const [screen, id] = h.split('/');
   if (screen === 'c' && id) return { screen: 'cat', id };
   if (screen === 'v' && id) return { screen: 'video', id };
-  if (['search', 'menu'].includes(screen)) return { screen };
+  if (['lessons', 'search', 'menu'].includes(screen)) return { screen };
   return { screen: 'home' };
 };
+const go = (path) => { window.location.hash = path; };
 
-/* ── карточка урока ── */
-function Card({ v, c, row }) {
+/* ── шапка ── */
+function Brand({ c, small }) {
   return (
-    <a className={`card${row ? ' row' : ''}`} href={`#/v/${v.id}`}>
-      <span className="thumb">
-        <img src={ytThumb(v.id)} alt="" loading="lazy" />
-        {v.dur && <i className="dur">{v.dur}</i>}
-      </span>
-      <span className="card-b">
-        {!row && <img className="ava" src="/logo.png" alt="" />}
-        <span className="card-t">
-          <span className="c-title">{v.title}</span>
-          <span className="c-meta">Hakk Academy</span>
-          <span className="c-meta">{c.cats[v.cat]?.t} · {v.dur}</span>
-        </span>
+    <a className={`brand${small ? ' sm' : ''}`} href="#/" aria-label="Hakk Academy">
+      <img className="brand-mark" src="/logo.png" alt="" />
+      <span className="brand-words">
+        <span className="brand-top">{c.brand.top}</span>
+        <span className="brand-bottom">{c.brand.bottom}</span>
       </span>
     </a>
   );
 }
 
-const Chips = ({ c, active, onPick }) => (
-  <div className="chips">
-    <button className={active === 'all' ? 'on' : ''} onClick={() => onPick('all')}>{c.chips.all}</button>
-    {CAT_ORDER.map((k) => (
-      <button key={k} className={active === k ? 'on' : ''} onClick={() => onPick(k)}>{c.cats[k].t}</button>
-    ))}
-  </div>
-);
-
-/* ── экраны ── */
-function Grid({ items, c, empty }) {
-  if (!items.length) return <p className="muted pad-y">{empty}</p>;
-  return <div className="grid">{items.map((v) => <Card key={v.id} v={v} c={c} />)}</div>;
-}
-
-function Home({ c, lessons, cat, setCat }) {
-  const items = useMemo(() => (cat === 'all' ? lessons : lessons.filter((v) => v.cat === cat)), [lessons, cat]);
+function TopBar({ c, title, back, right }) {
   return (
-    <>
-      <div className="ch-banner">
-        <img src="/logo.png" alt="" />
-        <div>
-          <h1>Hakk Academy</h1>
-          <p>{c.home.sub}</p>
-          <span>{c.brand.sub}</span>
-        </div>
-        <a className="btn btn-wa" href={waLink(c.waMessage)} target="_blank" rel="noreferrer"><WaIcon /> {c.home.cta}</a>
-      </div>
-      <Chips c={c} active={cat} onPick={setCat} />
-      <Grid items={items} c={c} empty={c.empty} />
-    </>
-  );
-}
-
-function Category({ c, id, lessons }) {
-  const cat = c.cats[id];
-  const items = useMemo(() => lessons.filter((v) => v.cat === id), [lessons, id]);
-  if (!cat) return <p className="muted pad-y">{c.nothing}</p>;
-  return (
-    <>
-      <div className="cat-head">
-        <h1>{cat.t}</h1>
-        <p>{cat.d}</p>
-        <span className="count">{c.count(items.length)}</span>
-      </div>
-      <Grid items={items} c={c} empty={c.empty} />
-    </>
-  );
-}
-
-function Watch({ c, id, lessons }) {
-  const [playing, setPlaying] = useState(false);
-  const v = lessons.find((x) => x.id === id);
-  useEffect(() => { setPlaying(false); window.scrollTo(0, 0); }, [id]);
-  if (!v) return <p className="muted pad-y">{c.nothing}</p>;
-
-  const same = lessons.filter((x) => x.cat === v.cat && x.id !== v.id);
-  const rest = [...same, ...lessons.filter((x) => x.cat !== v.cat)].slice(0, 12);
-
-  return (
-    <div className="watch">
-      <div className="watch-main">
-        <div className="player">
-          {playing ? (
-            <iframe src={`${ytEmbed(v.id)}&autoplay=1`} title={v.title} allow="accelerometer; autoplay; encrypted-media; picture-in-picture" allowFullScreen />
-          ) : (
-            <button className="player-cover" onClick={() => setPlaying(true)} aria-label={v.title}>
-              <img src={ytThumb(v.id)} alt="" />
-              <span className="play"><Play fill="currentColor" /></span>
-            </button>
-          )}
-        </div>
-
-        <h1 className="w-title">{v.title}</h1>
-
-        <div className="channel">
-          <img className="ava lg" src="/logo.png" alt="" />
-          <span className="channel-i">
-            <b>Hakk Academy</b>
-            <i>{c.count(lessons.length)}</i>
-          </span>
-          <a className="btn btn-dark" href={SITE.youtube} target="_blank" rel="noreferrer"><YtIcon /> {c.video.subscribe}</a>
-          <a className="btn btn-wa" href={waLink(c.waMessage)} target="_blank" rel="noreferrer"><WaIcon /> {c.home.cta}</a>
-        </div>
-
-        <div className="desc">
-          <b>{v.dur} · {c.cats[v.cat]?.t}</b>
-          <p>{c.about(c.cats[v.cat]?.t || '', v.dur || '')}</p>
-          <a className="desc-link" href={ytWatch(v.id)} target="_blank" rel="noreferrer">{c.video.openYt} →</a>
-        </div>
-      </div>
-
-      <aside className="watch-side">
-        <h2>{c.video.list}</h2>
-        {rest.map((x) => <Card key={x.id} v={x} c={c} row />)}
-      </aside>
+    <div className="topbar">
+      {back ? (
+        <button className="icon-btn" onClick={() => (window.history.length > 1 ? window.history.back() : go('/'))} aria-label="назад"><ChevronLeft /></button>
+      ) : <Brand c={c} />}
+      {title && <span className="topbar-title">{title}</span>}
+      <div className="topbar-right">{right}</div>
     </div>
   );
 }
 
-function SearchScreen({ c, lessons }) {
+/* ── строка урока в списке ── */
+function LessonRow({ v, c, lang }) {
+  return (
+    <a className="row" href={`#/v/${v.id}`}>
+      <span className="row-thumb">
+        <img src={ytThumb(v.id)} alt="" loading="lazy" />
+        {v.dur && <i className="dur">{v.dur}</i>}
+      </span>
+      <span className="row-body">
+        <span className="row-title">{v.title}</span>
+        <span className="row-meta"><Clock size={13} /> {v.dur} · {c.cats[v.cat]?.t}</span>
+      </span>
+      <ChevronRight className="row-arrow" />
+    </a>
+  );
+}
+
+/* ── экраны ── */
+function Home({ c, lang, lessons, counts }) {
+  const hero = SITE.heroVideo;
+  const insta = hero?.type === 'instagram';
+  const main = insta ? null : (lessons.find((v) => v.id === hero?.id) || lessons[0]);
+  const [q, setQ] = useState('');
+  const found = useMemo(() => {
+    const s = q.trim().toLowerCase();
+    return s ? lessons.filter((v) => v.title.toLowerCase().includes(s)) : [];
+  }, [q, lessons]);
+
+  return (
+    <>
+      <div className="hero">
+        <div className="hero-img" style={{ backgroundImage: `url(${SITE.heroImage})` }} />
+        <div className="hero-in">
+          <img className="hero-logo" src="/logo.png" alt="Hakk Academy" />
+          <h1>{c.home.hi1}<br />{c.home.hi2}</h1>
+          <p>{c.home.sub}</p>
+        </div>
+      </div>
+
+      <div className="pad">
+        {insta && (
+          <div className="feature insta">
+            <div className="insta-frame">
+              <iframe src={igEmbed(hero.id)} title={c.home.featured} scrolling="no" allowtransparency="true" allow="encrypted-media" />
+            </div>
+            <div className="feature-body">
+              <span className="feature-tag">{c.home.featured}</span>
+              <a className="feature-link" href={igLink(hero.id)} target="_blank" rel="noreferrer">Instagram-да ашу →</a>
+            </div>
+          </div>
+        )}
+
+        {main && (
+          <a className="feature" href={`#/v/${main.id}`}>
+            <span className="feature-thumb">
+              <img src={ytThumb(main.id)} alt="" />
+              <span className="play"><Play fill="currentColor" /></span>
+              {main.dur && <i className="dur">{main.dur}</i>}
+            </span>
+            <span className="feature-body">
+              <span className="feature-tag">{c.home.featured}</span>
+              <span className="feature-title">{main.title}</span>
+            </span>
+          </a>
+        )}
+
+        <a className="btn btn-wa wide" href={waLink(c.waMessage)} target="_blank" rel="noreferrer">
+          <WaIcon /> {c.home.cta}
+        </a>
+
+        <label className="search">
+          <Search />
+          <input value={q} onChange={(e) => setQ(e.target.value)} placeholder={c.home.search} aria-label={c.home.search} />
+        </label>
+
+        {q.trim() ? (
+          <div className="list mt">
+            {found.length ? found.map((v) => <LessonRow key={v.id} v={v} c={c} lang={lang} />) : <p className="muted pad-y">{c.nothing}</p>}
+          </div>
+        ) : (
+          <div className="tiles">
+            {CAT_ORDER.filter((k) => counts[k]).map((k) => {
+              const Ic = CAT_ICON[k] || BookOpen;
+              return (
+                <a className="tile" key={k} href={`#/c/${k}`}>
+                  <span className="tile-ic"><Ic /></span>
+                  <span className="tile-t">{c.cats[k].t}</span>
+                  <span className="tile-n">{c.count(counts[k])}</span>
+                  <ChevronRight className="tile-arrow" />
+                </a>
+              );
+            })}
+          </div>
+        )}
+      </div>
+    </>
+  );
+}
+
+function Category({ c, lang, id, lessons }) {
+  const [chip, setChip] = useState('all');
+  const cat = c.cats[id];
+  const list = useMemo(() => {
+    const base = lessons.filter((v) => v.cat === id);
+    if (chip === 'longest') return [...base].sort((a, b) => secs(b.dur) - secs(a.dur));
+    if (chip === 'shortest') return [...base].sort((a, b) => secs(a.dur) - secs(b.dur));
+    return base;
+  }, [lessons, id, chip]);
+
+  if (!cat) return <div className="pad"><p className="muted pad-y">{c.nothing}</p></div>;
+
+  return (
+    <>
+      <div className="banner">
+        <div className="hero-img" style={{ backgroundImage: `url(${SITE.heroImage})` }} />
+        <button className="icon-btn ghost banner-back" onClick={() => go('/')} aria-label="назад"><ChevronLeft /></button>
+        <div className="banner-in"><h2>{cat.t}</h2></div>
+      </div>
+
+      <div className="pad">
+        <p className="lead">{cat.d}</p>
+        <div className="chips">
+          {['all', 'longest', 'shortest'].map((k) => (
+            <button key={k} className={chip === k ? 'on' : ''} onClick={() => setChip(k)}>{c.chips[k]}</button>
+          ))}
+        </div>
+        <p className="count">{c.count(list.length)}</p>
+        <div className="list">
+          {list.length ? list.map((v) => <LessonRow key={v.id} v={v} c={c} lang={lang} />) : <p className="muted pad-y">{c.empty}</p>}
+        </div>
+      </div>
+    </>
+  );
+}
+
+function Video({ c, lang, id, lessons }) {
+  const [playing, setPlaying] = useState(false);
+  const v = lessons.find((x) => x.id === id);
+  useEffect(() => { setPlaying(false); window.scrollTo(0, 0); }, [id]);
+  if (!v) return <div className="pad"><p className="muted pad-y">{c.nothing}</p></div>;
+
+  const same = lessons.filter((x) => x.cat === v.cat);
+  const idx = same.findIndex((x) => x.id === v.id);
+  const rest = [...same.slice(idx + 1), ...same.slice(0, idx)];
+
+  return (
+    <>
+      <div className="player">
+        {playing ? (
+          <iframe src={`${ytEmbed(v.id)}&autoplay=1`} title={v.title} allow="accelerometer; autoplay; encrypted-media; picture-in-picture" allowFullScreen />
+        ) : (
+          <button className="player-cover" onClick={() => setPlaying(true)} aria-label={v.title}>
+            <img src={ytThumb(v.id)} alt="" />
+            <span className="play"><Play fill="currentColor" /></span>
+            {v.dur && <i className="dur">{v.dur}</i>}
+          </button>
+        )}
+      </div>
+
+      <div className="pad">
+        <h2 className="v-title">{v.title}</h2>
+        <p className="row-meta"><Clock size={13} /> {v.dur} · {c.cats[v.cat]?.t} · Hakk Academy</p>
+
+        <a className="btn btn-primary wide" href={ytWatch(v.id)} target="_blank" rel="noreferrer">
+          <YtIcon /> {c.video.openYt} <ExternalLink size={15} />
+        </a>
+
+        <a className="btn btn-wa wide" href={waLink(c.waMessage)} target="_blank" rel="noreferrer">
+          <WaIcon /> {c.home.cta}
+        </a>
+
+        <div className="card soft">
+          <h3>{c.video.about}</h3>
+          <p>{c.about(c.cats[v.cat]?.t || '', v.dur || '')}</p>
+        </div>
+
+        {!!rest.length && (
+          <>
+            <div className="sec-head">
+              <h3>{c.video.list}</h3>
+              <a href={`#/v/${rest[0].id}`}>{c.video.next} <ChevronRight size={15} /></a>
+            </div>
+            <div className="list">{rest.slice(0, 8).map((x) => <LessonRow key={x.id} v={x} c={c} lang={lang} />)}</div>
+          </>
+        )}
+      </div>
+    </>
+  );
+}
+
+function AllLessons({ c, lang, lessons, counts }) {
+  return (
+    <div className="pad">
+      <h2 className="screen-title">{c.menu.lessons}</h2>
+      <div className="tiles">
+        {CAT_ORDER.filter((k) => counts[k]).map((k) => {
+          const Ic = CAT_ICON[k] || BookOpen;
+          return (
+            <a className="tile" key={k} href={`#/c/${k}`}>
+              <span className="tile-ic"><Ic /></span>
+              <span className="tile-t">{c.cats[k].t}</span>
+              <span className="tile-n">{c.count(counts[k])}</span>
+              <ChevronRight className="tile-arrow" />
+            </a>
+          );
+        })}
+      </div>
+      <div className="list mt">{lessons.map((v) => <LessonRow key={v.id} v={v} c={c} lang={lang} />)}</div>
+    </div>
+  );
+}
+
+function SearchScreen({ c, lang, lessons }) {
   const [q, setQ] = useState('');
   const found = useMemo(() => {
     const s = q.trim().toLowerCase();
     return s ? lessons.filter((v) => v.title.toLowerCase().includes(s)) : lessons;
   }, [q, lessons]);
   return (
-    <>
-      <label className="search wide">
+    <div className="pad">
+      <h2 className="screen-title">{c.searchTitle}</h2>
+      <label className="search">
         <Search />
         <input value={q} onChange={(e) => setQ(e.target.value)} placeholder={c.home.search} autoFocus aria-label={c.home.search} />
       </label>
-      <p className="count mt">{c.count(found.length)}</p>
-      <Grid items={found} c={c} empty={c.nothing} />
-    </>
+      <p className="count">{c.count(found.length)}</p>
+      <div className="list">
+        {found.length ? found.map((v) => <LessonRow key={v.id} v={v} c={c} lang={lang} />) : <p className="muted pad-y">{c.nothing}</p>}
+      </div>
+    </div>
   );
 }
 
 function MenuScreen({ c, lang, setLang }) {
+  const items = [
+    { icon: BookOpen, label: c.menu.lessons, href: '#/lessons' },
+    { icon: YtIcon, label: c.menu.channel, href: SITE.youtube, out: true },
+    { icon: WaIcon, label: c.menu.write, href: waLink(c.waMessage), out: true },
+    ...(SITE.platform ? [{ icon: Globe, label: c.menu.platform, href: SITE.platform, out: true }] : []),
+  ];
   return (
-    <div className="menu-screen">
-      <h1 className="w-title">{c.menu.title}</h1>
+    <div className="pad">
+      <h2 className="screen-title">{c.menu.title}</h2>
+
+      <div className="card profile">
+        <img className="profile-mark" src="/logo.png" alt="" />
+        <span>
+          <b>Hakk Academy</b>
+          <i>{c.brand.sub}</i>
+        </span>
+      </div>
+
       <div className="menu-list">
-        <a href={SITE.youtube} target="_blank" rel="noreferrer"><span className="mi"><YtIcon /></span>{c.menu.channel}</a>
-        <a href={waLink(c.waMessage)} target="_blank" rel="noreferrer"><span className="mi"><WaIcon /></span>{c.menu.write}</a>
-        {SITE.platform && <a href={SITE.platform} target="_blank" rel="noreferrer"><span className="mi"><Globe /></span>{c.menu.platform}</a>}
+        {items.map((it) => {
+          const Ic = it.icon;
+          return (
+            <a key={it.label} href={it.href} {...(it.out ? { target: '_blank', rel: 'noreferrer' } : {})}>
+              <span className="menu-ic"><Ic /></span>{it.label}<ChevronRight className="menu-arrow" />
+            </a>
+          );
+        })}
+      </div>
+
+      <div className="menu-list">
         <div className="lang-row">
-          <span className="mi"><Globe /></span>{c.menu.lang}
+          <span className="menu-ic"><Globe /></span>{c.menu.lang}
           <span className="lang">
             <button className={lang === 'kk' ? 'on' : ''} onClick={() => setLang('kk')}>ҚАЗ</button>
             <button className={lang === 'ru' ? 'on' : ''} onClick={() => setLang('ru')}>РУС</button>
           </span>
         </div>
       </div>
-      <div className="desc">
-        <b><Info size={15} /> {c.menu.about}</b>
+
+      <div className="card soft">
+        <h3><Info size={16} /> {c.menu.about}</h3>
         <p>{c.menu.aboutText}</p>
       </div>
+
       <p className="copyright">© {new Date().getFullYear()} Hakk Academy. {c.rights}</p>
     </div>
   );
@@ -202,9 +352,6 @@ export default function App() {
   const [lang, setLangState] = useState(getLang);
   const [lessons, setLessons] = useState([]);
   const [route, setRoute] = useState(parseHash);
-  const [cat, setCat] = useState('all');
-  const [q, setQ] = useState('');
-  const [side, setSide] = useState(false);
 
   const c = COPY[lang] || COPY.kk;
   const setLang = useCallback((l) => {
@@ -216,93 +363,60 @@ export default function App() {
     fetch('/lessons.json', { cache: 'no-cache' }).then((r) => r.json()).then(setLessons).catch(() => {});
   }, []);
   useEffect(() => {
-    const h = () => { setRoute(parseHash()); setSide(false); window.scrollTo(0, 0); };
+    const h = () => { setRoute(parseHash()); window.scrollTo(0, 0); };
     window.addEventListener('hashchange', h);
     return () => window.removeEventListener('hashchange', h);
   }, []);
   useEffect(() => {
     document.documentElement.lang = lang;
-    document.title = lang === 'ru' ? 'Hakk Academy — видеоуроки' : 'Hakk Academy — видеосабақтар';
+    document.title = lang === 'ru'
+      ? 'Hakk Academy — Коран и арабский язык онлайн'
+      : 'Hakk Academy — Құран және араб тілі онлайн';
   }, [lang]);
 
   const counts = useMemo(() => lessons.reduce((a, v) => ({ ...a, [v.cat]: (a[v.cat] || 0) + 1 }), {}), [lessons]);
   const { screen, id } = route;
-  const searchHits = useMemo(() => {
-    const s = q.trim().toLowerCase();
-    return s ? lessons.filter((v) => v.title.toLowerCase().includes(s)) : null;
-  }, [q, lessons]);
 
-  const sideItems = [
+  const tabs = [
     { key: 'home', icon: House, label: c.nav.home, href: '#/' },
-    ...CAT_ORDER.filter((k) => counts[k]).map((k) => ({ key: k, icon: CAT_ICON[k], label: c.cats[k].t, href: `#/c/${k}` })),
+    { key: 'lessons', icon: BookOpen, label: c.nav.lessons, href: '#/lessons' },
+    { key: 'search', icon: Search, label: c.nav.search, href: '#/search' },
+    { key: 'menu', icon: MenuIcon, label: c.nav.menu, href: '#/menu' },
   ];
+  const activeTab = screen === 'cat' || screen === 'video' ? 'lessons' : screen;
 
   return (
-    <div className="yt">
-      <header className="top">
-        <button className="ico" onClick={() => setSide(!side)} aria-label={c.nav.menu}>{side ? <X /> : <MenuIcon />}</button>
-        <a className="logo" href="#/">
-          <img src="/logo.png" alt="" />
-          <span><b>HAKK</b><i>ACADEMY</i></span>
-        </a>
+    <div className="app">
+      <div className="shell">
+        {screen !== 'home' && screen !== 'cat' && (
+          <TopBar c={c} back={screen === 'video'} right={screen === 'menu' ? null : (
+            <a className="icon-btn" href="#/menu" aria-label={c.nav.menu}><MenuIcon /></a>
+          )} />
+        )}
+        {screen === 'home' && (
+          <TopBar c={c} right={<a className="icon-btn" href="#/menu" aria-label={c.nav.menu}><MenuIcon /></a>} />
+        )}
 
-        <label className="search top-search">
-          <Search />
-          <input value={q} onChange={(e) => setQ(e.target.value)} placeholder={c.home.search} aria-label={c.home.search} />
-          {q && <button className="ico sm" onClick={() => setQ('')} aria-label="×"><X /></button>}
-        </label>
+        <main>
+          {screen === 'home' && <Home c={c} lang={lang} lessons={lessons} counts={counts} />}
+          {screen === 'cat' && <Category c={c} lang={lang} id={id} lessons={lessons} />}
+          {screen === 'video' && <Video c={c} lang={lang} id={id} lessons={lessons} />}
+          {screen === 'lessons' && <AllLessons c={c} lang={lang} lessons={lessons} counts={counts} />}
+          {screen === 'search' && <SearchScreen c={c} lang={lang} lessons={lessons} />}
+          {screen === 'menu' && <MenuScreen c={c} lang={lang} setLang={setLang} />}
+        </main>
 
-        <div className="top-right">
-          <span className="lang">
-            <button className={lang === 'kk' ? 'on' : ''} onClick={() => setLang('kk')}>ҚАЗ</button>
-            <button className={lang === 'ru' ? 'on' : ''} onClick={() => setLang('ru')}>РУС</button>
-          </span>
-          <a className="btn btn-wa sm-hide" href={waLink(c.waMessage)} target="_blank" rel="noreferrer"><WaIcon /> {c.home.cta}</a>
-        </div>
-      </header>
-
-      <div className="body">
-        <aside className={`side${side ? ' open' : ''}`}>
-          {sideItems.map((it) => {
-            const Ic = it.icon || BookOpen;
-            const on = (screen === 'home' && it.key === 'home') || (screen === 'cat' && id === it.key);
+        <nav className="tabbar">
+          {tabs.map((t) => {
+            const Ic = t.icon;
             return (
-              <a key={it.key} href={it.href} className={on ? 'on' : ''}>
-                <Ic /><span>{it.label}</span>
-                {counts[it.key] ? <em>{counts[it.key]}</em> : null}
+              <a key={t.key} href={t.href} className={activeTab === t.key ? 'on' : ''}>
+                <Ic /><span>{t.label}</span>
               </a>
             );
           })}
-          <hr />
-          <a href={SITE.youtube} target="_blank" rel="noreferrer"><YtIcon /><span>{c.menu.channel}</span></a>
-          <a href={waLink(c.waMessage)} target="_blank" rel="noreferrer"><WaIcon /><span>{c.menu.write}</span></a>
-        </aside>
-        {side && <div className="scrim" onClick={() => setSide(false)} />}
-
-        <main>
-          {searchHits ? (
-            <>
-              <p className="count">{c.count(searchHits.length)}</p>
-              <Grid items={searchHits} c={c} empty={c.nothing} />
-            </>
-          ) : (
-            <>
-              {screen === 'home' && <Home c={c} lessons={lessons} cat={cat} setCat={setCat} />}
-              {screen === 'cat' && <Category c={c} id={id} lessons={lessons} />}
-              {screen === 'video' && <Watch c={c} id={id} lessons={lessons} />}
-              {screen === 'search' && <SearchScreen c={c} lessons={lessons} />}
-              {screen === 'menu' && <MenuScreen c={c} lang={lang} setLang={setLang} />}
-            </>
-          )}
-        </main>
+        </nav>
       </div>
-
-      <nav className="tabs">
-        <a href="#/" className={screen === 'home' ? 'on' : ''}><House /><span>{c.nav.home}</span></a>
-        <a href="#/search" className={screen === 'search' ? 'on' : ''}><Search /><span>{c.nav.search}</span></a>
-        <a href={waLink(c.waMessage)} target="_blank" rel="noreferrer"><WaIcon /><span>WhatsApp</span></a>
-        <a href="#/menu" className={screen === 'menu' ? 'on' : ''}><MenuIcon /><span>{c.nav.menu}</span></a>
-      </nav>
     </div>
   );
 }

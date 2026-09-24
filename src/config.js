@@ -15,7 +15,10 @@ export const SITE = {
   // Своё фото: положите файл в public/ и укажите его здесь, напр. '/hero.jpg'.
   heroImage: '/hero.jpg',
   // ролик в шапке сайта — любой урок с канала
-  heroVideo: { id: 'f7lCH8cGROQ', title: '«Құранға түсу оңай» 1-сабақ' },
+  // Главное видео на первом экране.
+  //   { type: 'instagram', id: '<код рилса>' }  — рилс из Instagram
+  //   { id: '<код видео>' }                     — урок с YouTube
+  heroVideo: { type: 'instagram', id: 'DVQbhr8DEn9' },
   platform: '',                       // адрес учебной платформы; пусто — кнопка скрыта
   channelId: 'UCxOw4gHztFswqyl0ee-vx8w',
 };
@@ -29,3 +32,5 @@ export const ytWatch = (id) => `https://www.youtube.com/watch?v=${id}`;
 export const ytEmbed = (id) => `https://www.youtube-nocookie.com/embed/${id}?rel=0&modestbranding=1`;
 export const ytThumb = (id) => `https://i.ytimg.com/vi/${id}/hqdefault.jpg`;
 export const ytPlaylist = (id) => `https://www.youtube.com/playlist?list=${id}`;
+export const igEmbed = (id) => `https://www.instagram.com/reel/${id}/embed/`;
+export const igLink = (id) => `https://www.instagram.com/reel/${id}/`;
