@@ -85,7 +85,8 @@ function LessonRow({ v, c, lang }) {
 function Home({ c, lang, lessons, counts }) {
   const hero = SITE.heroVideo;
   const insta = hero?.type === 'instagram';
-  const main = insta ? null : (lessons.find((v) => v.id === hero?.id) || lessons[0]);
+  const file = hero?.type === 'file';
+  const main = insta || file ? null : (lessons.find((v) => v.id === hero?.id) || lessons[0]);
   const [q, setQ] = useState('');
   const found = useMemo(() => {
     const s = q.trim().toLowerCase();
@@ -104,6 +105,16 @@ function Home({ c, lang, lessons, counts }) {
       </div>
 
       <div className="pad">
+        {file && (
+          <div className="feature">
+            <video className="feature-video" src={hero.src} poster={hero.poster} controls playsInline preload="metadata" />
+            <div className="feature-body">
+              <span className="feature-tag">{c.home.featured}</span>
+              {hero.title && <span className="feature-title">{hero.title}</span>}
+            </div>
+          </div>
+        )}
+
         {insta && (
           <div className="feature insta">
             <div className="insta-frame">

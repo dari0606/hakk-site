@@ -18,7 +18,8 @@ export const SITE = {
   // Главное видео на первом экране.
   //   { type: 'instagram', id: '<код рилса>' }  — рилс из Instagram
   //   { id: '<код видео>' }                     — урок с YouTube
-  heroVideo: { type: 'instagram', id: 'DVQbhr8DEn9' },
+  //   { type: 'file', src: '/hero.mp4', poster: '/hero-poster.jpg' } — файл на сайте
+  heroVideo: { type: 'file', src: '/hero.mp4', poster: '/hero-poster.jpg', title: 'Алғашқы оффлайн орталық' },
   platform: '',                       // адрес учебной платформы; пусто — кнопка скрыта
   channelId: 'UCxOw4gHztFswqyl0ee-vx8w',
 };
