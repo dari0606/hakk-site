@@ -43,9 +43,12 @@ main { padding-bottom: 96px; }
 .copyright { color: var(--muted); font-size: 12.5px; text-align: center; margin: 26px 0 8px; }
 
 /* ── логотип и шапка ── */
-.brand { display: inline-flex; flex-direction: column; line-height: 1; }
+.brand { display: inline-flex; align-items: center; gap: 10px; line-height: 1; }
+.brand-mark { width: 40px; height: 40px; border-radius: 13px; object-fit: contain; background: #4a5bc8; box-shadow: 0 5px 14px rgba(74, 91, 200, .28); flex: none; }
+.brand-words { display: flex; flex-direction: column; }
 .brand-top { font-size: 19px; font-weight: 800; color: var(--brand-ink); letter-spacing: .01em; }
 .brand-bottom { font-size: 10.5px; font-weight: 600; color: var(--brand-2); letter-spacing: .3em; margin-top: 3px; }
+.brand.sm .brand-mark { width: 30px; height: 30px; border-radius: 10px; }
 .brand.sm .brand-top { font-size: 14px; }
 .brand.sm .brand-bottom { font-size: 8px; letter-spacing: .24em; }
 
@@ -61,6 +64,7 @@ main { padding-bottom: 96px; }
 .hero-img { position: absolute; inset: 0; background-size: cover; background-position: center 72%; filter: saturate(.5) brightness(1.18); }
 .hero::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(240, 237, 253, .5), rgba(245, 243, 252, .88)); }
 .hero-in { position: relative; z-index: 2; }
+.hero-logo { width: 76px; height: 76px; margin: 0 auto 18px; border-radius: 24px; object-fit: contain; background: #4a5bc8; border: 4px solid rgba(255, 255, 255, .85); box-shadow: 0 12px 30px rgba(58, 48, 140, .28); }
 .hero h1 { font-size: clamp(25px, 6.6vw, 30px); font-weight: 760; letter-spacing: -.025em; }
 .hero p { margin: 12px auto 0; font-size: 14.5px; color: var(--brand-ink); max-width: 300px; }
 
@@ -143,7 +147,7 @@ main { padding-bottom: 96px; }
 
 /* ── меню ── */
 .profile { display: flex; align-items: center; gap: 14px; }
-.profile-ic { width: 52px; height: 52px; border-radius: 16px; background: var(--soft); display: grid; place-items: center; flex: none; }
+.profile-mark { width: 54px; height: 54px; border-radius: 17px; object-fit: contain; background: #4a5bc8; box-shadow: 0 6px 16px rgba(74, 91, 200, .26); flex: none; }
 .profile b { display: block; font-size: 15.5px; color: var(--ink); }
 .profile i { font-style: normal; font-size: 13px; color: var(--muted); }
 .menu-list { background: var(--card); border-radius: 18px; box-shadow: var(--shadow); margin-top: 14px; overflow: hidden; }
