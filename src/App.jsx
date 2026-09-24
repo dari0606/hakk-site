@@ -317,7 +317,7 @@ function MenuScreen({ c, lang, setLang }) {
   const items = [
     { icon: BookOpen, label: c.menu.lessons, href: '#/lessons' },
     { icon: YtIcon, label: c.menu.channel, href: SITE.youtube, out: true },
-    ...(SITE.instagram ? [{ icon: IgIcon, label: `@${SITE.instagram}`, href: `https://instagram.com/${SITE.instagram}`, out: true }] : []),
+    ...(SITE.instagram ? [{ icon: IgIcon, label: c.menu.insta, href: `https://instagram.com/${SITE.instagram}`, out: true }] : []),
     { icon: WaIcon, label: c.menu.write, href: waLink(c.waMessage), out: true },
     ...(SITE.platform ? [{ icon: Globe, label: c.menu.platform, href: SITE.platform, out: true }] : []),
   ];
