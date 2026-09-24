@@ -15,7 +15,7 @@ export const SITE = {
   // Своё фото: положите файл в public/ и укажите его здесь, напр. '/hero.jpg'.
   heroImage: '/hero.jpg',
   // ролик в шапке сайта — любой урок с канала
-  heroVideo: { id: '5WoVscyavl8', title: 'КІРІСПЕ САБАҚ — Құранға түсу оңай' },
+  heroVideo: { id: 'f7lCH8cGROQ', title: '«Құранға түсу оңай» 1-сабақ' },
   platform: '',                       // адрес учебной платформы; пусто — кнопка скрыта
   channelId: 'UCxOw4gHztFswqyl0ee-vx8w',
 };
