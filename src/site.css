@@ -44,14 +44,12 @@ main { padding-bottom: 96px; }
 .copyright { color: var(--muted); font-size: 12.5px; text-align: center; margin: 26px 0 8px; }
 
 /* ── логотип и шапка ── */
-.brand { display: inline-flex; align-items: center; gap: 10px; line-height: 1; }
-.brand-mark { width: 40px; height: 40px; border-radius: 13px; object-fit: contain; background: #4a5bc8; box-shadow: 0 5px 14px rgba(74, 91, 200, .28); flex: none; }
-.brand-words { display: flex; flex-direction: column; }
-.brand-top { font-size: 19px; font-weight: 800; color: var(--brand-ink); letter-spacing: .01em; }
-.brand-bottom { font-size: 10.5px; font-weight: 600; color: var(--brand-2); letter-spacing: .3em; margin-top: 3px; }
-.brand.sm .brand-mark { width: 30px; height: 30px; border-radius: 10px; }
-.brand.sm .brand-top { font-size: 14px; }
-.brand.sm .brand-bottom { font-size: 8px; letter-spacing: .24em; }
+.brand { display: inline-flex; align-items: center; }
+/* один знак на всех экранах: круглый, на своей синей плашке */
+.logo-mark { width: 42px; height: 42px; border-radius: 50%; object-fit: cover; background: #4a5bc8; box-shadow: 0 4px 14px rgba(74, 91, 200, .3); flex: none; }
+.logo-mark.md { width: 54px; height: 54px; }
+.logo-mark.lg { width: 62px; height: 62px; box-shadow: 0 8px 22px rgba(52, 36, 120, .3); }
+.brand.sm .logo-mark { width: 32px; height: 32px; }
 
 .topbar { position: sticky; top: 0; z-index: 20; display: flex; align-items: center; gap: 12px; padding: 14px 18px; background: rgba(245, 243, 252, .92); backdrop-filter: saturate(1.4) blur(12px); }
 .topbar-title { font-weight: 650; color: var(--ink); }
@@ -66,10 +64,7 @@ main { padding-bottom: 96px; }
 .hero .hero-img { background-position: center 46%; }
 .banner .hero-img { background-position: center 40%; }
 .hero::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(255, 250, 252, .18) 0%, transparent 30%, rgba(248, 245, 255, .3) 72%, var(--bg) 100%); }
-.hero-bar { position: relative; z-index: 3; display: flex; align-items: flex-start; justify-content: space-between; }
-.wordmark { display: flex; flex-direction: column; line-height: 1; text-align: left; }
-.wordmark b { font-family: var(--serif); font-size: 21px; font-weight: 700; color: #4a3f86; letter-spacing: .01em; }
-.wordmark i { font-family: var(--serif); font-style: normal; font-size: 13px; color: #6e63a8; letter-spacing: .16em; margin-top: 3px; }
+.hero-bar { position: relative; z-index: 3; display: flex; align-items: center; justify-content: space-between; }
 .hero-burger { width: 40px; height: 40px; display: grid; place-items: center; color: #4a3f86; }
 .hero-burger svg { width: 26px; height: 26px; }
 .hero-in { position: relative; z-index: 2; padding-top: 34px; }
@@ -164,7 +159,6 @@ main { padding-bottom: 96px; }
 
 /* ── меню ── */
 .profile { display: flex; align-items: center; gap: 14px; }
-.profile-mark { width: 54px; height: 54px; border-radius: 17px; object-fit: contain; background: #4a5bc8; box-shadow: 0 6px 16px rgba(74, 91, 200, .26); flex: none; }
 .profile b { display: block; font-size: 15.5px; color: var(--ink); }
 .profile i { font-style: normal; font-size: 13px; color: var(--muted); }
 .menu-list { background: var(--card); border-radius: 18px; box-shadow: var(--shadow); margin-top: 14px; overflow: hidden; }

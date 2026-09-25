@@ -50,11 +50,7 @@ const go = (path) => { window.location.hash = path; };
 function Brand({ c, small }) {
   return (
     <a className={`brand${small ? ' sm' : ''}`} href="#/" aria-label="Hakk Academy">
-      <img className="brand-mark" src="/logo.png" alt="" />
-      <span className="brand-words">
-        <span className="brand-top">{c.brand.top}</span>
-        <span className="brand-bottom">{c.brand.bottom}</span>
-      </span>
+      <img className="logo-mark" src="/logo.png" alt="Hakk Academy" />
     </a>
   );
 }
@@ -105,7 +101,7 @@ function Home({ c, lang, lessons, counts, onMenu }) {
       <div className="hero">
         {SITE.heroImage && <div className="hero-img" style={{ backgroundImage: `url(${SITE.heroImage})` }} />}
         <div className="hero-bar">
-          <span className="wordmark"><b>HAKK</b><i>ACADEMY</i></span>
+          <img className="logo-mark lg" src="/logo.png" alt="Hakk Academy" />
           <button className="hero-burger" onClick={onMenu} aria-label={c.nav.menu}><MenuIcon /></button>
         </div>
         <div className="hero-in">
@@ -335,7 +331,7 @@ function MenuScreen({ c, lang, setLang }) {
       <h2 className="screen-title">{c.menu.title}</h2>
 
       <div className="card profile">
-        <img className="profile-mark" src="/logo.png" alt="" />
+        <img className="logo-mark md" src="/logo.png" alt="Hakk Academy" />
         <span>
           <b>Hakk Academy</b>
           <i>{c.brand.sub}</i>
