@@ -8,7 +8,7 @@ import workerUrl from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
 
 pdfjs.GlobalWorkerOptions.workerSrc = workerUrl;
 
-export default function PdfReader({ file, title, download, of }) {
+export default function PdfReader({ file, title, download, of, fallback }) {
   const [doc, setDoc] = useState(null);
   const [page, setPage] = useState(1);
   const [busy, setBusy] = useState(true);
@@ -21,7 +21,15 @@ export default function PdfReader({ file, title, download, of }) {
   useEffect(() => {
     let dead = false;
     setBusy(true); setErr(false);
-    pdfjs.getDocument({ url: file }).promise.then((d) => { if (!dead) { setDoc(d); setPage(1); } })
+    const load = () => pdfjs.getDocument({ url: file, disableAutoFetch: false }).promise;
+    load()
+      .catch((e) => {
+        // на части телефонов не запускается фоновый поток — пробуем без него
+        console.warn('PDF: повтор без воркера', e);
+        pdfjs.GlobalWorkerOptions.workerSrc = '';
+        return load();
+      })
+      .then((d) => { if (!dead) { setDoc(d); setPage(1); } })
       .catch((e) => { console.error('PDF:', e); if (!dead) { setErr(true); setBusy(false); } });
     return () => { dead = true; };
   }, [file]);
@@ -62,7 +70,14 @@ export default function PdfReader({ file, title, download, of }) {
     return () => window.removeEventListener('keydown', key);
   }, [total]);
 
-  if (err) return null;
+  if (err) {
+    return (
+      <div className="pdf pdf-err">
+        <p>{fallback}</p>
+        <a className="btn btn-primary" href={file} target="_blank" rel="noreferrer"><Download /> {download}</a>
+      </div>
+    );
+  }
 
   return (
     <div className="pdf">

@@ -207,7 +207,7 @@ function Shop({ c, id, books }) {
           <div className="books">
             {items.map((b) => (b.inline && b.file ? (
               <section className="reader" key={b.id}>
-                <PdfReader file={b.file} title={b.title} download={c.download} of={c.pageWord} />
+                <PdfReader file={b.file} title={b.title} download={c.download} of={c.pageWord} fallback={c.noViewer} />
                 <div className="book-actions">
                   <a className="btn btn-line" href={b.file} target="_blank" rel="noreferrer"><OpenIcon /> {c.openPdf}</a>
                   <a className="btn btn-wa" href={waLink(`${c.waMessage} — ${b.title}`)} target="_blank" rel="noreferrer"><WaIcon /> {c.order}</a>
