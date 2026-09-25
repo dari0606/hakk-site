@@ -4,7 +4,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   Search, ChevronLeft, ChevronRight, House, BookOpen, Menu as MenuIcon, Play,
-  Sparkles, MoonStar, ListChecks, ScrollText, Headphones, Globe, MessageSquare,
+  Sparkles, MoonStar, ListChecks, ScrollText, Headphones, Globe, MessageSquare, Notebook,
   ExternalLink, Clock, Volume2, VolumeX,
 } from 'lucide-react';
 import { COPY, CAT_ORDER, SHOP_CATS } from './copy.js';
@@ -489,11 +489,13 @@ export default function App() {
 
   const tabs = [
     { key: 'home', icon: House, label: c.nav.home, href: '#/' },
-    { key: 'lessons', icon: BookOpen, label: c.nav.lessons, href: '#/lessons' },
+    { key: 'books', icon: BookOpen, label: c.cats.books.t, href: '#/c/books' },
+    { key: 'workbook', icon: Notebook, label: c.cats.workbook.t, href: '#/c/workbook' },
     { key: 'search', icon: Search, label: c.nav.search, href: '#/search' },
     { key: 'menu', icon: MenuIcon, label: c.nav.menu, href: '#/menu' },
   ];
-  const activeTab = screen === 'cat' || screen === 'video' ? 'lessons' : screen;
+  const activeTab = screen === 'cat' ? (SHOP_CATS.includes(id) ? id : 'home')
+    : screen === 'video' ? 'home' : screen;
 
   return (
     <div className="app">
