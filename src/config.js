@@ -22,6 +22,8 @@ export const SITE = {
     quran:   { icon: '/art/icon-quran.png' },
     mothers: { icon: '/art/icon-history.png' },
     other:   { icon: '/art/icon-lectures.png' },
+    books:    { icon: '/art/icon-books.png' },
+    workbook: { icon: '/art/icon-workbook.png' },
   },
   // ролик в шапке сайта — любой урок с канала
   // Главное видео на первом экране.

@@ -7,9 +7,10 @@ import {
   Sparkles, MoonStar, ListChecks, ScrollText, Headphones, Globe, MessageSquare,
   ExternalLink, Clock, Volume2, VolumeX,
 } from 'lucide-react';
-import { COPY, CAT_ORDER } from './copy.js';
+import { COPY, CAT_ORDER, SHOP_CATS } from './copy.js';
 import { CAT_ART } from './icons.jsx';
 import { SITE, waLink, ytEmbed, ytThumb, ytWatch, igEmbed, igLink } from './config.js';
+import { Download } from 'lucide-react';
 
 /* ── бренд-иконки ── */
 const WaIcon = (p) => (
@@ -85,7 +86,7 @@ function LessonRow({ v, c, lang }) {
 }
 
 /* ── экраны ── */
-function Home({ c, lang, lessons, counts, onMenu }) {
+function Home({ c, lang, lessons, counts, books, onMenu }) {
   const hero = SITE.heroVideo;
   const insta = hero?.type === 'instagram';
   const file = hero?.type === 'file';
@@ -159,7 +160,7 @@ function Home({ c, lang, lessons, counts, onMenu }) {
             )}
 
             <div className="tiles">
-              {CAT_ORDER.filter((k) => counts[k]).map((k) => {
+              {[...CAT_ORDER.filter((k) => counts[k]), ...SHOP_CATS].map((k) => {
                 const Art = CAT_ART[k];
                 const art = SITE.art?.[k];
                 return (
@@ -168,7 +169,7 @@ function Home({ c, lang, lessons, counts, onMenu }) {
                     <span className="tile-row">
                       <span className="tile-text">
                         <span className="tile-t">{c.cats[k].t}</span>
-                        <span className="tile-n">{c.count(counts[k])}</span>
+                        <span className="tile-n">{SHOP_CATS.includes(k) ? (books.filter((b) => b.cat === k).length ? c.count2(books.filter((b) => b.cat === k).length) : c.cats[k].n) : c.count(counts[k])}</span>
                       </span>
                       <span className="tile-go"><ChevronRight /></span>
                     </span>
@@ -180,6 +181,50 @@ function Home({ c, lang, lessons, counts, onMenu }) {
             <a className="btn btn-wa wide" href={waLink(c.waMessage)} target="_blank" rel="noreferrer">
               <WaIcon /> {c.home.cta}
             </a>
+          </>
+        )}
+      </div>
+    </>
+  );
+}
+
+function Shop({ c, id, books }) {
+  const cat = c.cats[id];
+  const items = books.filter((b) => b.cat === id);
+  return (
+    <>
+      <div className="banner">
+        <div className="hero-img" style={{ backgroundImage: `url(${SITE.heroImage})` }} />
+        <button className="icon-btn ghost banner-back" onClick={() => go('/')} aria-label="назад"><ChevronLeft /></button>
+        <div className="banner-in"><h2>{cat.t}</h2></div>
+      </div>
+
+      <div className="pad">
+        <p className="lead">{cat.d}</p>
+
+        {items.length ? (
+          <div className="books">
+            {items.map((b) => (
+              <article className="book" key={b.id}>
+                {b.cover && <img className="book-cover" src={b.cover} alt="" loading="lazy" />}
+                <div className="book-body">
+                  <h3>{b.title}</h3>
+                  {b.sub && <p>{b.sub}</p>}
+                  {b.pages && <span className="book-meta">{b.pages} бет</span>}
+                  <div className="book-actions">
+                    {b.file && (
+                      <a className="btn btn-primary" href={b.file} target="_blank" rel="noreferrer"><Download /> {c.video.openYt.includes('YouTube') ? 'PDF' : 'PDF'}</a>
+                    )}
+                    <a className="btn btn-wa" href={waLink(`${c.waMessage} — ${b.title}`)} target="_blank" rel="noreferrer"><WaIcon /> {c.order}</a>
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
+        ) : (
+          <>
+            <p className="muted pad-y">{c.soon}</p>
+            <a className="btn btn-wa wide" href={waLink(c.waMessage)} target="_blank" rel="noreferrer"><WaIcon /> {c.order}</a>
           </>
         )}
       </div>
@@ -414,6 +459,7 @@ function Ambience({ label }) {
 export default function App() {
   const [lang, setLangState] = useState(getLang);
   const [lessons, setLessons] = useState([]);
+  const [books, setBooks] = useState([]);
   const [route, setRoute] = useState(parseHash);
 
   const c = COPY[lang] || COPY.kk;
@@ -424,6 +470,7 @@ export default function App() {
 
   useEffect(() => {
     fetch('/lessons.json', { cache: 'no-cache' }).then((r) => r.json()).then(setLessons).catch(() => {});
+    fetch('/books.json', { cache: 'no-cache' }).then((r) => r.json()).then(setBooks).catch(() => {});
   }, []);
   useEffect(() => {
     const h = () => { setRoute(parseHash()); window.scrollTo(0, 0); };
@@ -459,8 +506,10 @@ export default function App() {
 
 
         <main>
-          {screen === 'home' && <Home c={c} lang={lang} lessons={lessons} counts={counts} onMenu={() => go('/menu')} />}
-          {screen === 'cat' && <Category c={c} lang={lang} id={id} lessons={lessons} />}
+          {screen === 'home' && <Home c={c} lang={lang} lessons={lessons} counts={counts} books={books} onMenu={() => go('/menu')} />}
+          {screen === 'cat' && (SHOP_CATS.includes(id)
+            ? <Shop c={c} id={id} books={books} />
+            : <Category c={c} lang={lang} id={id} lessons={lessons} />)}
           {screen === 'video' && <Video c={c} lang={lang} id={id} lessons={lessons} />}
           {screen === 'lessons' && <AllLessons c={c} lang={lang} lessons={lessons} counts={counts} />}
           {screen === 'search' && <SearchScreen c={c} lang={lang} lessons={lessons} />}
