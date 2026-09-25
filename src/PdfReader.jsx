@@ -3,8 +3,9 @@
 // браузеры часто не показывают.
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { ChevronLeft, ChevronRight, Download, Loader } from 'lucide-react';
-import * as pdfjs from 'pdfjs-dist';
-import workerUrl from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
+// legacy-сборка: работает в Safari на iPhone, где обычная падает
+import * as pdfjs from 'pdfjs-dist/legacy/build/pdf.mjs';
+import workerUrl from 'pdfjs-dist/legacy/build/pdf.worker.min.mjs?url';
 
 pdfjs.GlobalWorkerOptions.workerSrc = workerUrl;
 
@@ -12,7 +13,7 @@ export default function PdfReader({ file, title, download, of, fallback }) {
   const [doc, setDoc] = useState(null);
   const [page, setPage] = useState(1);
   const [busy, setBusy] = useState(true);
-  const [err, setErr] = useState(false);
+  const [err, setErr] = useState(null);
   const box = useRef(null);
   const canvas = useRef(null);
   const task = useRef(null);
@@ -30,7 +31,7 @@ export default function PdfReader({ file, title, download, of, fallback }) {
         return load();
       })
       .then((d) => { if (!dead) { setDoc(d); setPage(1); } })
-      .catch((e) => { console.error('PDF:', e); if (!dead) { setErr(true); setBusy(false); } });
+      .catch((e) => { console.error('PDF:', e); if (!dead) { setErr(String(e?.message || e).slice(0, 120)); setBusy(false); } });
     return () => { dead = true; };
   }, [file]);
 
@@ -74,6 +75,7 @@ export default function PdfReader({ file, title, download, of, fallback }) {
     return (
       <div className="pdf pdf-err">
         <p>{fallback}</p>
+        <small className="pdf-why">{err}</small>
         <a className="btn btn-primary" href={file} target="_blank" rel="noreferrer"><Download /> {download}</a>
       </div>
     );
