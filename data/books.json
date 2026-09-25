@@ -7,5 +7,86 @@
     "pages": 74,
     "cover": "/art/cover-workbook.jpg",
     "file": "/files/zhumys-dapteri.pdf"
+  },
+  {
+    "id": "elikteuge-kim-laiyq",
+    "cat": "books",
+    "title": "Еліктеуге кім лайық",
+    "sub": "Серікбосын Мұсабекұлы",
+    "pages": 52,
+    "cover": "/art/cover-elikteuge-kim-laiyq.jpg",
+    "file": "/files/elikteuge-kim-laiyq.pdf"
+  },
+  {
+    "id": "sanlaq-sahabalar",
+    "cat": "books",
+    "title": "Саңлақ сахабалар",
+    "sub": "",
+    "pages": 336,
+    "cover": "/art/cover-sanlaq-sahabalar.jpg",
+    "file": "/files/sanlaq-sahabalar.pdf"
+  },
+  {
+    "id": "haziret-aisha",
+    "cat": "books",
+    "title": "Хазірет Айша",
+    "sub": "",
+    "pages": 464,
+    "cover": "/art/cover-haziret-aisha.jpg",
+    "file": "/files/haziret-aisha.pdf"
+  },
+  {
+    "id": "kozdi-qorgau",
+    "cat": "books",
+    "title": "Көзді күнәдан қалай қорғаймыз",
+    "sub": "",
+    "pages": 100,
+    "cover": "/art/cover-kozdi-qorgau.jpg",
+    "file": "/files/kozdi-qorgau.pdf"
+  },
+  {
+    "id": "mubarak-30-kun",
+    "cat": "books",
+    "title": "Мубарак 30 күн",
+    "sub": "Бейсенәлі Олжас",
+    "pages": 84,
+    "cover": "/art/cover-mubarak-30-kun.jpg",
+    "file": "/files/mubarak-30-kun.pdf"
+  },
+  {
+    "id": "napil-namaz",
+    "cat": "books",
+    "title": "Нәпіл намаз",
+    "sub": "Бекітілген сүннет · Дастан Құрманбаев",
+    "pages": 25,
+    "cover": "/art/cover-napil-namaz.jpg",
+    "file": "/files/napil-namaz.pdf"
+  },
+  {
+    "id": "arab-tirkester",
+    "cat": "books",
+    "title": "Араб тіліндегі танымал тіркестер",
+    "sub": "",
+    "pages": 48,
+    "cover": "/art/cover-arab-tirkester.jpg",
+    "file": "/files/arab-tirkester.pdf"
+  },
+  {
+    "id": "quran-mysaldary",
+    "cat": "books",
+    "title": "Құран мысалдары",
+    "sub": "",
+    "pages": 30,
+    "cover": "/art/cover-quran-mysaldary.jpg",
+    "file": "/files/quran-mysaldary.pdf"
+  },
+  {
+    "id": "dugalar",
+    "cat": "books",
+    "title": "Дұғалар",
+    "sub": "",
+    "pages": 4,
+    "cover": "/art/cover-dugalar.jpg",
+    "file": "/files/dugalar.pdf"
   }
 ]
