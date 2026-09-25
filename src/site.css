@@ -145,15 +145,26 @@ main { padding-bottom: 96px; }
 
 /* ── читалка рабочей тетради ── */
 .reader { background: var(--card); border-radius: 20px; padding: 14px; box-shadow: var(--shadow); }
-.reader-head { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 12px; }
-.reader-head h3 { font-family: var(--serif); font-size: 18px; font-weight: 400; color: var(--ink); }
-.reader-head .btn { margin-left: auto; height: 42px; padding: 0 16px; font-size: 14px; border-radius: 13px; }
-.reader-frame { display: block; width: 100%; height: min(76vh, 860px); border: 0; border-radius: 14px; background: var(--soft); }
-.reader-fallback { display: grid; place-items: center; gap: 12px; padding: 26px 18px; text-align: center; }
-.reader-fallback img { width: 150px; border-radius: 10px; box-shadow: 0 6px 18px rgba(76, 62, 168, .2); }
-.reader-fallback p { font-size: 14px; color: var(--muted); }
+.pdf-bar { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+.pdf-title { font-family: var(--serif); font-size: 17px; color: var(--ink); flex: 1; min-width: 0; }
+.pdf-bar .btn { height: 40px; padding: 0 15px; font-size: 13.5px; border-radius: 12px; flex: none; }
+.pdf-stage { position: relative; border-radius: 14px; overflow: hidden; background: var(--soft); min-height: 220px; touch-action: pan-y; user-select: none; }
+.pdf-stage canvas { display: block; width: 100%; height: auto; }
+.pdf-busy { position: absolute; inset: 0; display: grid; place-items: center; color: var(--brand); background: rgba(246, 244, 255, .5); }
+.pdf-busy svg { width: 26px; height: 26px; animation: spin 1s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.pdf-arrow { position: absolute; top: 50%; transform: translateY(-50%); width: 40px; height: 40px; border-radius: 50%; background: rgba(255, 255, 255, .9); color: var(--ink); display: grid; place-items: center; box-shadow: 0 3px 12px rgba(30, 20, 70, .22); }
+.pdf-arrow.left { left: 8px; }
+.pdf-arrow.right { right: 8px; }
+.pdf-arrow:disabled { opacity: .25; }
+.pdf-arrow svg { width: 20px; height: 20px; }
+.pdf-foot { display: flex; align-items: center; justify-content: center; gap: 16px; margin-top: 12px; font-size: 13.5px; color: var(--muted); font-weight: 600; }
+.pdf-foot button { width: 34px; height: 34px; border-radius: 50%; background: var(--soft); color: var(--brand); display: grid; place-items: center; }
+.pdf-foot button:disabled { opacity: .35; }
+.pdf-foot svg { width: 18px; height: 18px; }
 .btn-line { background: #fff; color: var(--ink); border: 1px solid var(--line); }
 .btn-line:hover { border-color: #d6cff2; }
+.book-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
 
 /* ── страница урока ── */
 .player { position: relative; aspect-ratio: 16 / 9; background: #241c52; border-radius: 0 0 24px 24px; overflow: hidden; box-shadow: var(--shadow); }

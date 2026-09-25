@@ -11,6 +11,7 @@ import { COPY, CAT_ORDER, SHOP_CATS } from './copy.js';
 import { CAT_ART } from './icons.jsx';
 import { SITE, waLink, ytEmbed, ytThumb, ytWatch, igEmbed, igLink } from './config.js';
 import { Download, ExternalLink as OpenIcon } from 'lucide-react';
+import PdfReader from './PdfReader.jsx';
 
 /* ── бренд-иконки ── */
 const WaIcon = (p) => (
@@ -206,19 +207,7 @@ function Shop({ c, id, books }) {
           <div className="books">
             {items.map((b) => (b.inline && b.file ? (
               <section className="reader" key={b.id}>
-                <div className="reader-head">
-                  <div>
-                    <h3>{b.title}</h3>
-                    {b.pages && <span className="book-meta">{b.pages} бет</span>}
-                  </div>
-                  <a className="btn btn-primary" href={b.file} download><Download /> {c.download}</a>
-                </div>
-                <object className="reader-frame" data={`${b.file}#view=FitH&toolbar=1`} type="application/pdf">
-                  <div className="reader-fallback">
-                    {b.cover && <img src={b.cover} alt="" />}
-                    <p>{c.noViewer}</p>
-                  </div>
-                </object>
+                <PdfReader file={b.file} title={b.title} download={c.download} of={c.pageWord} />
                 <div className="book-actions">
                   <a className="btn btn-line" href={b.file} target="_blank" rel="noreferrer"><OpenIcon /> {c.openPdf}</a>
                   <a className="btn btn-wa" href={waLink(`${c.waMessage} — ${b.title}`)} target="_blank" rel="noreferrer"><WaIcon /> {c.order}</a>
