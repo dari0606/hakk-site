@@ -5,7 +5,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   Search, ChevronLeft, ChevronRight, House, BookOpen, Menu as MenuIcon, Play,
   Sparkles, MoonStar, ListChecks, ScrollText, Headphones, Globe, MessageSquare,
-  ExternalLink, Clock,
+  ExternalLink, Clock, Volume2, VolumeX,
 } from 'lucide-react';
 import { COPY, CAT_ORDER } from './copy.js';
 import { CAT_ART } from './icons.jsx';
@@ -364,6 +364,49 @@ function MenuScreen({ c, lang, setLang }) {
   );
 }
 
+/* ── тихий фоновый звук природы ── */
+function Ambience({ label }) {
+  const [on, setOn] = useState(() => { try { return localStorage.getItem('hakk_sound') === '1'; } catch { return false; } });
+  const [el, setEl] = useState(null);
+
+  useEffect(() => {
+    if (!el) return;
+    let stop = false;
+    if (on) {
+      el.volume = 0;
+      el.play().then(() => {
+        // мягко выводим громкость, чтобы звук не «выстрелил»
+        const step = () => { if (stop || !el) return; el.volume = Math.min(0.22, el.volume + 0.015); if (el.volume < 0.22) requestAnimationFrame(step); };
+        step();
+      }).catch(() => setOn(false)); // браузер не дал играть без нажатия
+    } else {
+      el.pause();
+      el.currentTime = 0;
+    }
+    return () => { stop = true; };
+  }, [on, el]);
+
+  useEffect(() => {
+    try { localStorage.setItem('hakk_sound', on ? '1' : '0'); } catch { /* приватный режим */ }
+  }, [on]);
+
+  useEffect(() => {
+    if (!el) return;
+    const vis = () => { if (document.hidden) el.pause(); else if (on) el.play().catch(() => {}); };
+    document.addEventListener('visibilitychange', vis);
+    return () => document.removeEventListener('visibilitychange', vis);
+  }, [el, on]);
+
+  return (
+    <>
+      <audio ref={setEl} src="/sound/nature.m4a" loop preload="none" />
+      <button className={`ambience${on ? ' on' : ''}`} onClick={() => setOn(!on)} aria-label={label} title={label}>
+        {on ? <Volume2 /> : <VolumeX />}
+      </button>
+    </>
+  );
+}
+
 /* ── приложение ── */
 export default function App() {
   const [lang, setLangState] = useState(getLang);
@@ -420,6 +463,8 @@ export default function App() {
           {screen === 'search' && <SearchScreen c={c} lang={lang} lessons={lessons} />}
           {screen === 'menu' && <MenuScreen c={c} lang={lang} setLang={setLang} />}
         </main>
+
+        <Ambience label={c.menu.sound} />
 
         <nav className="tabbar">
           {tabs.map((t) => {

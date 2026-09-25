@@ -172,6 +172,12 @@ main { padding-bottom: 96px; }
 .lang button { padding: 5px 10px; border-radius: 8px; font-size: 12.5px; font-weight: 700; color: var(--muted); }
 .lang button.on { background: #fff; color: var(--brand-ink); box-shadow: var(--shadow); }
 
+/* ── кнопка звука природы ── */
+.ambience { position: fixed; right: max(14px, calc(50vw - 226px)); bottom: calc(86px + env(safe-area-inset-bottom)); z-index: 35; width: 44px; height: 44px; border-radius: 50%; background: rgba(255, 255, 255, .94); color: var(--muted); display: grid; place-items: center; box-shadow: 0 4px 16px rgba(76, 62, 168, .18); backdrop-filter: blur(8px); transition: color .2s, background .2s, transform .15s; }
+.ambience:hover { transform: translateY(-1px); }
+.ambience.on { background: var(--brand); color: #fff; box-shadow: 0 6px 18px rgba(106, 92, 196, .38); }
+.ambience svg { width: 20px; height: 20px; }
+
 /* ── нижняя панель ── */
 .tabbar { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 480px; z-index: 30; display: grid; grid-template-columns: repeat(4, 1fr); background: #fff; border-radius: 24px 24px 0 0; box-shadow: 0 -6px 26px rgba(76, 62, 168, .12); padding: 10px 0 calc(10px + env(safe-area-inset-bottom)); }
 .tabbar a { display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 11px; font-weight: 600; color: var(--muted); padding: 4px 0; }
