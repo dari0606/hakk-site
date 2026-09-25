@@ -126,22 +126,6 @@ function Home({ c, lang, lessons, counts, onMenu }) {
           </div>
         ) : (
           <>
-            <div className="tiles">
-              {CAT_ORDER.filter((k) => counts[k]).map((k) => {
-                const Art = CAT_ART[k];
-                const art = SITE.art?.[k];
-                return (
-                  <a className="tile" key={k} href={`#/c/${k}`}>
-                    <span className="tile-art">{art?.icon ? <img src={art.icon} alt="" loading="lazy" /> : <Art />}</span>
-                    <span className="tile-row">
-                      <span className="tile-t">{c.cats[k].t}</span>
-                      <span className="tile-go"><ChevronRight /></span>
-                    </span>
-                  </a>
-                );
-              })}
-            </div>
-
             {file && (
               <div className="feature">
                 <video className="feature-video" src={hero.src} poster={hero.poster} controls playsInline preload="metadata" />
@@ -177,6 +161,22 @@ function Home({ c, lang, lessons, counts, onMenu }) {
                 </span>
               </a>
             )}
+
+            <div className="tiles">
+              {CAT_ORDER.filter((k) => counts[k]).map((k) => {
+                const Art = CAT_ART[k];
+                const art = SITE.art?.[k];
+                return (
+                  <a className="tile" key={k} href={`#/c/${k}`}>
+                    <span className="tile-art">{art?.icon ? <img src={art.icon} alt="" loading="lazy" /> : <Art />}</span>
+                    <span className="tile-row">
+                      <span className="tile-t">{c.cats[k].t}</span>
+                      <span className="tile-go"><ChevronRight /></span>
+                    </span>
+                  </a>
+                );
+              })}
+            </div>
 
             <a className="btn btn-wa wide" href={waLink(c.waMessage)} target="_blank" rel="noreferrer">
               <WaIcon /> {c.home.cta}
