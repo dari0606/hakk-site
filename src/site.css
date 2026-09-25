@@ -46,9 +46,9 @@ main { padding-bottom: 96px; }
 /* ── логотип и шапка ── */
 .brand { display: inline-flex; align-items: center; }
 /* один знак на всех экранах: круглый, на своей синей плашке */
-.logo-mark { width: 42px; height: 42px; border-radius: 50%; object-fit: cover; background: #4a5bc8; box-shadow: 0 4px 14px rgba(74, 91, 200, .3); flex: none; }
+.logo-mark { width: 42px; height: 42px; border-radius: 50%; object-fit: contain; filter: drop-shadow(0 4px 12px rgba(74, 91, 200, .34)); flex: none; }
 .logo-mark.md { width: 54px; height: 54px; }
-.logo-mark.lg { width: 62px; height: 62px; box-shadow: 0 8px 22px rgba(52, 36, 120, .3); }
+.logo-mark.lg { width: 66px; height: 66px; filter: drop-shadow(0 8px 20px rgba(52, 36, 120, .34)); }
 .brand.sm .logo-mark { width: 32px; height: 32px; }
 
 .topbar { position: sticky; top: 0; z-index: 20; display: flex; align-items: center; gap: 12px; padding: 14px 18px; background: rgba(245, 243, 252, .92); backdrop-filter: saturate(1.4) blur(12px); }
