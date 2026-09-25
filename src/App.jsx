@@ -166,7 +166,10 @@ function Home({ c, lang, lessons, counts, onMenu }) {
                   <a className="tile" key={k} href={`#/c/${k}`}>
                     <span className="tile-art">{art?.icon ? <img src={art.icon} alt="" loading="lazy" /> : <Art />}</span>
                     <span className="tile-row">
-                      <span className="tile-t">{c.cats[k].t}</span>
+                      <span className="tile-text">
+                        <span className="tile-t">{c.cats[k].t}</span>
+                        <span className="tile-n">{c.count(counts[k])}</span>
+                      </span>
                       <span className="tile-go"><ChevronRight /></span>
                     </span>
                   </a>
