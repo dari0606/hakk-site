@@ -8,8 +8,9 @@
     "dev": "npm run data && vite",
     "build": "npm run data && vite build",
     "preview": "vite preview",
-    "check": "node scripts/check-lessons.mjs",
-    "data": "node scripts/make-data.mjs"
+    "check": "node --dns-result-order=ipv4first scripts/check-lessons.mjs",
+    "data": "node scripts/make-data.mjs",
+    "sync": "node --dns-result-order=ipv4first scripts/sync-youtube.mjs"
   },
   "dependencies": {
     "pdfjs-dist": "^6.3.289",
